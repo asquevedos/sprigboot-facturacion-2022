@@ -19,9 +19,14 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
+import javax.swing.JTextArea;
+import javax.swing.DropMode;
+import javax.swing.JTextPane;
 
 @Controller
 public class VentanaPersona extends JFrame {
@@ -31,34 +36,21 @@ public class VentanaPersona extends JFrame {
 	private JTextField txtApellido;
 	private JTextField txtCedula;
 	private JTextField txtDireccion;
+	JTextArea textArea;
 
 	public Persona persona;
-	
+	public List<Persona> personas;
+
 	@Autowired
 	PersonaRepositorio personaRepositorio;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VentanaPersona frame = new VentanaPersona();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public VentanaPersona() {
+
+		personas = new ArrayList<Persona>();
+		//
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 850, 386);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -121,25 +113,56 @@ public class VentanaPersona extends JFrame {
 				persona.setApellido(txtApellido.getText());
 				persona.setCedula(txtCedula.getText());
 				persona.setDireccion(txtDireccion.getText());
-				
+
 				personaRepositorio.save(persona);
-				
+
 				limpiarVentana();
 
-				
 			}
 		});
-		btnGrabarPersona.setBounds(313, 76, 96, 94);
+		btnGrabarPersona.setBounds(165, 180, 96, 40);
 		contentPane.add(btnGrabarPersona);
 
+
+		
+		JButton btnMostrar = new JButton("Mostrar");
+		btnMostrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				personas = personaRepositorio.findAll();
+				llenarDatosPersona(personas);
+			}
+		});
+		btnMostrar.setBounds(399, 231, 89, 23);
+		contentPane.add(btnMostrar);
+		
+		textArea = new JTextArea();
+		textArea.setRows(100);
+		textArea.setBounds(322, 54, 481, 145);
+		contentPane.add(textArea);
+
+		//llenarDatosPersona(personas);
+
 	}
-	
-	public void limpiarVentana()
-	{
+
+	public void limpiarVentana() {
 		txtNombre.setText("");
 		txtApellido.setText("");
 		txtCedula.setText("");
 		txtDireccion.setText("");
+
+	}
+
+	public void llenarDatosPersona(List<Persona> personas) {
+		String datos="";
+		for (Persona p : personas) {
+			//datos = datos + p + "\n";
+			//tAPersonas.setText("\n");
+			textArea.append(p.toString());
+		}
 		
+		//textArea.setText(datos);
+		// tAPersonas.setText("hasdiasodsa");
+
+		// System.out.println(tAPersonas);
 	}
 }
