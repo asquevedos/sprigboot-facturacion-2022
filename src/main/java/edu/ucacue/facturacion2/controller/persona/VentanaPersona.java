@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -35,7 +36,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 @Controller
-public class VentanaPersona extends JFrame {
+public class VentanaPersona extends JInternalFrame {
 
 	private JPanel contentPane;
 	private JTextField txtNombre;
@@ -59,11 +60,13 @@ public class VentanaPersona extends JFrame {
 	public boolean bandera=true;	
 
 	public VentanaPersona() {
+		
+		this.setResizable(true);
+		this.setMaximizable(true);
+		this.setClosable(true);
+		this.setMaximizable(true);
+		this.setIconifiable(true);
 		interfazPersona();
-	}
-	
-	public void interfazPersona()
-	{
 		personas = new ArrayList<Persona>();
 		//
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -207,6 +210,11 @@ public class VentanaPersona extends JFrame {
 		btnActualizar.setEnabled(false);
 		btnActualizar.setBounds(215, 181, 89, 40);
 		contentPane.add(btnActualizar);
+	}
+	
+	public void interfazPersona()
+	{
+		
 
 	}
 

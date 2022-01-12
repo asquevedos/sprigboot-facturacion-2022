@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import edu.ucacue.facturacion2.controller.PrincipalUI;
 import edu.ucacue.facturacion2.controller.persona.VentanaPersona;
 
 @SpringBootApplication
@@ -19,7 +20,7 @@ public class Facturacion2Application {
 		ConfigurableApplicationContext contexto = new SpringApplicationBuilder(Facturacion2Application.class)
 				.headless(false).web(WebApplicationType.NONE).run(args);
 
-		VentanaPersona ventana = contexto.getBean(VentanaPersona.class);
+		PrincipalUI ventana = contexto.getBean(PrincipalUI.class);
 		ventana.setVisible(true);
 	}
 
