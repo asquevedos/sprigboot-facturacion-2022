@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import edu.ucacue.facturacion2.controller.VentanaPersona;
+import edu.ucacue.facturacion2.controller.persona.VentanaPersona;
 
 @SpringBootApplication
 public class Facturacion2Application {

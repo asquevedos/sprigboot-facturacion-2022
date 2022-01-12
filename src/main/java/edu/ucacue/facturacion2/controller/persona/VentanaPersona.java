@@ -1,4 +1,4 @@
-package edu.ucacue.facturacion2.controller;
+package edu.ucacue.facturacion2.controller.persona;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -25,8 +25,14 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
+import javax.annotation.PostConstruct;
 import javax.swing.DropMode;
 import javax.swing.JTextPane;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 @Controller
 public class VentanaPersona extends JFrame {
@@ -36,19 +42,30 @@ public class VentanaPersona extends JFrame {
 	private JTextField txtApellido;
 	private JTextField txtCedula;
 	private JTextField txtDireccion;
-	JTextArea textArea;
+	private JButton btnEliminar;
+	private JButton btnActualizar;
 
 	public Persona persona;
+	public Persona personaSeleccionada;
 	public List<Persona> personas;
 
 	@Autowired
 	PersonaRepositorio personaRepositorio;
+	
+	//Interfaz gráfica con tabla
+	PersonaItemModel personaModelo;
+	private JTable tablePersona;
+	
+	public boolean bandera=true;	
 
 	public VentanaPersona() {
-
+		interfazPersona();
+	}
+	
+	public void interfazPersona()
+	{
 		personas = new ArrayList<Persona>();
 		//
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 850, 386);
 		contentPane = new JPanel();
@@ -77,7 +94,7 @@ public class VentanaPersona extends JFrame {
 
 		txtApellido = new JTextField();
 		txtApellido.setColumns(10);
-		txtApellido.setBounds(131, 88, 154, 20);
+		txtApellido.setBounds(131, 87, 154, 20);
 		contentPane.add(txtApellido);
 
 		JLabel lblNewLabel_1_2 = new JLabel("Cédula:");
@@ -108,6 +125,8 @@ public class VentanaPersona extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// persona = new Persona(txtNombre.getText(), txtApellido.getText(),
 				// txtCedula.getText(), txtDireccion.getText() );
+				if(bandera == true)
+				{
 				persona = new Persona();
 				persona.setNombre(txtNombre.getText());
 				persona.setApellido(txtApellido.getText());
@@ -115,32 +134,79 @@ public class VentanaPersona extends JFrame {
 				persona.setDireccion(txtDireccion.getText());
 
 				personaRepositorio.save(persona);
+				}else {
+					persona = new Persona();
+					persona.setId(personaSeleccionada.getId());
+					persona.setNombre(txtNombre.getText());
+					persona.setApellido(txtApellido.getText());
+					persona.setCedula(txtCedula.getText());
+					persona.setDireccion(txtDireccion.getText());
+
+					personaRepositorio.save(persona);
+					bandera=true;
+					txtCedula.setEnabled(true);
+				}
 
 				limpiarVentana();
+				generarTabla();
+				
 
 			}
 		});
-		btnGrabarPersona.setBounds(165, 180, 96, 40);
+		btnGrabarPersona.setBounds(10, 181, 96, 40);
 		contentPane.add(btnGrabarPersona);
-
-
 		
-		JButton btnMostrar = new JButton("Mostrar");
-		btnMostrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				personas = personaRepositorio.findAll();
-				llenarDatosPersona(personas);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(322, 58, 356, 162);
+		contentPane.add(scrollPane);
+		
+		tablePersona = new JTable();
+		tablePersona.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				//System.out.println(tablePersona.getSelectedRow());
+				btnEliminar.setEnabled(true);
+				btnActualizar.setEnabled(true);
+				System.out.println(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
+				
 			}
 		});
-		btnMostrar.setBounds(399, 231, 89, 23);
-		contentPane.add(btnMostrar);
+		scrollPane.setViewportView(tablePersona);
 		
-		textArea = new JTextArea();
-		textArea.setRows(100);
-		textArea.setBounds(322, 54, 481, 145);
-		contentPane.add(textArea);
-
-		//llenarDatosPersona(personas);
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				personaRepositorio.delete(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
+				generarTabla();
+				btnEliminar.setEnabled(false);
+				btnActualizar.setEnabled(false);
+			}
+		});
+		btnEliminar.setEnabled(false);
+		btnEliminar.setBounds(116, 180, 89, 41);
+		contentPane.add(btnEliminar);
+		
+		btnActualizar = new JButton("Actualizar");
+		btnActualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				personaSeleccionada= personaModelo.getPersonaAt(tablePersona.getSelectedRow());
+				txtNombre.setText(personaSeleccionada.getNombre());
+				txtApellido.setText(personaSeleccionada.getApellido());
+				txtCedula.setText(personaSeleccionada.getCedula());
+				txtDireccion.setText(personaSeleccionada.getDireccion());
+				txtCedula.setEnabled(false);
+				bandera=false;
+				
+				btnEliminar.setEnabled(false);
+				btnActualizar.setEnabled(false);
+				
+			}
+		});
+		btnActualizar.setEnabled(false);
+		btnActualizar.setBounds(215, 181, 89, 40);
+		contentPane.add(btnActualizar);
 
 	}
 
@@ -151,18 +217,15 @@ public class VentanaPersona extends JFrame {
 		txtDireccion.setText("");
 
 	}
-
-	public void llenarDatosPersona(List<Persona> personas) {
-		String datos="";
-		for (Persona p : personas) {
-			//datos = datos + p + "\n";
-			//tAPersonas.setText("\n");
-			textArea.append(p.toString());
-		}
+	
+	
+	@PostConstruct
+	public void generarTabla()
+	{
+		List<Persona> personas= personaRepositorio.findAll();
+		personaModelo = new PersonaItemModel(personas);
+		tablePersona.setModel(personaModelo);
 		
-		//textArea.setText(datos);
-		// tAPersonas.setText("hasdiasodsa");
-
-		// System.out.println(tAPersonas);
 	}
+
 }
