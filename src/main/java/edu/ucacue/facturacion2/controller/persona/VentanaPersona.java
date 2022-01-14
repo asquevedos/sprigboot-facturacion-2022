@@ -34,6 +34,10 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.Color;
 
 @Controller
 public class VentanaPersona extends JInternalFrame {
@@ -52,15 +56,20 @@ public class VentanaPersona extends JInternalFrame {
 
 	@Autowired
 	PersonaRepositorio personaRepositorio;
-	
-	//Interfaz gráfica con tabla
+
+	// Interfaz gráfica con tabla
 	PersonaItemModel personaModelo;
 	private JTable tablePersona;
-	
-	public boolean bandera=true;	
+
+	public boolean bandera = true;
+	private JComboBox cBOpcion;
+	private JTextField txtCriterio;
+	private JLabel lblNewLabel_2;
+	private JButton btnBuscar;
 
 	public VentanaPersona() {
-		
+		setBackground(new Color(240, 240, 240));
+
 		this.setResizable(true);
 		this.setMaximizable(true);
 		this.setClosable(true);
@@ -68,9 +77,7 @@ public class VentanaPersona extends JInternalFrame {
 		this.setIconifiable(true);
 		interfazPersona();
 		personas = new ArrayList<Persona>();
-		//
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 850, 386);
+		setBounds(10, 10, 850, 386);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -128,16 +135,15 @@ public class VentanaPersona extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				// persona = new Persona(txtNombre.getText(), txtApellido.getText(),
 				// txtCedula.getText(), txtDireccion.getText() );
-				if(bandera == true)
-				{
-				persona = new Persona();
-				persona.setNombre(txtNombre.getText());
-				persona.setApellido(txtApellido.getText());
-				persona.setCedula(txtCedula.getText());
-				persona.setDireccion(txtDireccion.getText());
+				if (bandera == true) {
+					persona = new Persona();
+					persona.setNombre(txtNombre.getText());
+					persona.setApellido(txtApellido.getText());
+					persona.setCedula(txtCedula.getText());
+					persona.setDireccion(txtDireccion.getText());
 
-				personaRepositorio.save(persona);
-				}else {
+					personaRepositorio.save(persona);
+				} else {
 					persona = new Persona();
 					persona.setId(personaSeleccionada.getId());
 					persona.setNombre(txtNombre.getText());
@@ -146,41 +152,40 @@ public class VentanaPersona extends JInternalFrame {
 					persona.setDireccion(txtDireccion.getText());
 
 					personaRepositorio.save(persona);
-					bandera=true;
+					bandera = true;
 					txtCedula.setEnabled(true);
 				}
 
 				limpiarVentana();
 				generarTabla();
-				
 
 			}
 		});
 		btnGrabarPersona.setBounds(10, 181, 96, 40);
 		contentPane.add(btnGrabarPersona);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setBounds(322, 58, 356, 162);
+		scrollPane.setBounds(315, 90, 451, 162);
 		contentPane.add(scrollPane);
-		
+
 		tablePersona = new JTable();
 		tablePersona.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//System.out.println(tablePersona.getSelectedRow());
+				// System.out.println(tablePersona.getSelectedRow());
 				btnEliminar.setEnabled(true);
 				btnActualizar.setEnabled(true);
 				System.out.println(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
-				
+
 			}
 		});
 		scrollPane.setViewportView(tablePersona);
-		
+
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				personaRepositorio.delete(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
 				generarTabla();
 				btnEliminar.setEnabled(false);
@@ -190,31 +195,72 @@ public class VentanaPersona extends JInternalFrame {
 		btnEliminar.setEnabled(false);
 		btnEliminar.setBounds(116, 180, 89, 41);
 		contentPane.add(btnEliminar);
-		
+
 		btnActualizar = new JButton("Actualizar");
 		btnActualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				personaSeleccionada= personaModelo.getPersonaAt(tablePersona.getSelectedRow());
+				personaSeleccionada = personaModelo.getPersonaAt(tablePersona.getSelectedRow());
 				txtNombre.setText(personaSeleccionada.getNombre());
 				txtApellido.setText(personaSeleccionada.getApellido());
 				txtCedula.setText(personaSeleccionada.getCedula());
 				txtDireccion.setText(personaSeleccionada.getDireccion());
 				txtCedula.setEnabled(false);
-				bandera=false;
-				
+				bandera = false;
+
 				btnEliminar.setEnabled(false);
 				btnActualizar.setEnabled(false);
-				
+
 			}
 		});
 		btnActualizar.setEnabled(false);
 		btnActualizar.setBounds(215, 181, 89, 40);
 		contentPane.add(btnActualizar);
-	}
-	
-	public void interfazPersona()
-	{
 		
+		cBOpcion = new JComboBox();
+		cBOpcion.setModel(new DefaultComboBoxModel(new String[] {"", "Nombre", "Apellido", "Cédula"}));
+		cBOpcion.setBounds(315, 55, 77, 22);
+		contentPane.add(cBOpcion);
+		
+		txtCriterio = new JTextField();
+		txtCriterio.setFont(new Font("Tahoma", Font.BOLD, 18));
+		txtCriterio.setBounds(402, 37, 275, 39);
+		contentPane.add(txtCriterio);
+		txtCriterio.setColumns(10);
+		
+		lblNewLabel_2 = new JLabel("Buscar por:");
+		lblNewLabel_2.setBounds(315, 37, 77, 14);
+		contentPane.add(lblNewLabel_2);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String opcion= cBOpcion.getSelectedItem().toString();
+				String criterio = txtCriterio.getText();
+				List<Persona> resultadoBusqueda = new ArrayList<>();
+				if(opcion.equals("Nombre"))
+				{
+					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de busqueda
+					resultadoBusqueda = personaRepositorio.buscarPorNombre("%"+criterio+"%");
+					generarTablaBusqueda(resultadoBusqueda);
+				}
+				if(opcion.equals("Apellido"))
+				{
+					resultadoBusqueda = personaRepositorio.findByApellidoLike("%"+criterio+"%");
+					generarTablaBusqueda(resultadoBusqueda);
+					
+				}
+				if(opcion.equals("Cédula"))
+				{
+					resultadoBusqueda = personaRepositorio.findByCedulaLike("%"+criterio+"%");
+					generarTablaBusqueda(resultadoBusqueda);
+				}
+			}
+		});
+		btnBuscar.setBounds(687, 37, 79, 34);
+		contentPane.add(btnBuscar);
+	}
+
+	public void interfazPersona() {
 
 	}
 
@@ -225,15 +271,21 @@ public class VentanaPersona extends JInternalFrame {
 		txtDireccion.setText("");
 
 	}
-	
-	
+
 	@PostConstruct
-	public void generarTabla()
-	{
-		List<Persona> personas= personaRepositorio.findAll();
+	public void generarTabla() {
+
+		personas = personaRepositorio.findAll();
+
 		personaModelo = new PersonaItemModel(personas);
 		tablePersona.setModel(personaModelo);
-		
+
+	}
+	
+	public void generarTablaBusqueda(List<Persona> personas)
+	{
+		personaModelo = new PersonaItemModel(personas);
+		tablePersona.setModel(personaModelo);
 	}
 
 }
