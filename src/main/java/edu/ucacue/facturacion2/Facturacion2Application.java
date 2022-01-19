@@ -22,6 +22,7 @@ public class Facturacion2Application {
 
 		PrincipalUI ventana = contexto.getBean(PrincipalUI.class);
 		ventana.setVisible(true);
+		ventana.insertarCFEjemplo();
 	}
 
 }

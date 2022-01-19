@@ -21,4 +21,5 @@ public interface PersonaRepositorio extends JpaRepository<Persona, Integer> {
 	List<Persona> buscarPorNombre(@Param("nom") String nombre);
 	
 
+
 }
