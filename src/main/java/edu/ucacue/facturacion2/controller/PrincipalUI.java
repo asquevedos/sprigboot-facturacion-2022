@@ -1,16 +1,15 @@
 package edu.ucacue.facturacion2.controller;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import edu.ucacue.facturacion2.controller.factura.VentanaFactura;
 import edu.ucacue.facturacion2.controller.persona.VentanaPersona;
 import edu.ucacue.facturacion2.infraestructura.repositorio.CabeceraFacturaRepository;
 import edu.ucacue.facturacion2.infraestructura.repositorio.ClienteRepository;
@@ -34,6 +33,9 @@ import java.awt.event.ActionEvent;
 @Controller
 public class PrincipalUI extends JFrame {
 
+
+	private static final long serialVersionUID = 1L;
+
 	private JPanel contentPane;
 
 	@Autowired
@@ -50,6 +52,9 @@ public class PrincipalUI extends JFrame {
 	
 	@Autowired
 	ProductoRepository productoRepository;
+	
+	@Autowired
+	VentanaFactura ventanaFactura;
 	
 
 	/**
@@ -87,10 +92,19 @@ public class PrincipalUI extends JFrame {
 		
 		JMenu mnNewMenu_2 = new JMenu("Facturación");
 		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Nueva Factura ");
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ventanaFactura.setVisible(true);
+				desktopPane.add(ventanaFactura);
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_2);
 		contentPane = new JPanel();
-		//contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		//contentPane.setLayout(new BorderLayout(0, 0));
-		//setContentPane(contentPane);
+
+		
+		//ventanaFactura.
 		
 		desktopPane= new JDesktopPane();
 		getContentPane().add(desktopPane);
@@ -141,5 +155,4 @@ public class PrincipalUI extends JFrame {
 	
 	
 	}
-
 }
