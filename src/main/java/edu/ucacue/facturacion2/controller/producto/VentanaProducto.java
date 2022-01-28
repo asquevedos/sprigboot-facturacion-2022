@@ -1,4 +1,4 @@
-package edu.ucacue.facturacion2.controller.cliente;
+package edu.ucacue.facturacion2.controller.producto;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import edu.ucacue.facturacion2.infraestructura.repositorio.ClienteRepositorio;
+import edu.ucacue.facturacion2.infraestructura.repositorio.ProductoRepository;
 import edu.ucacue.facturacion2.modelo.Cliente;
+import edu.ucacue.facturacion2.modelo.Producto;
 
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -40,35 +42,33 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Color;
 
 @Controller
-public class VentanaCliente extends JInternalFrame {
+public class VentanaProducto extends JInternalFrame {
 
 	private JPanel contentPane;
 	private JTextField txtNombre;
-	private JTextField txtApellido;
-	private JTextField txtCedula;
-	private JTextField txtDireccion;
+	private JTextField txtPrecioUnitario;
+	private JTextField txtCantidad;
 	private JButton btnEliminar;
 	private JButton btnActualizar;
 
-	public Cliente cliente;
-	public Cliente clienteSeleccionada;
-	public List<Cliente> clientes;
+	public Producto producto;
+	public Producto productoSeleccionada;
+	public List<Producto> productos;
 
 	@Autowired
-	ClienteRepositorio clienteRepositorio;
+	ProductoRepository productoRepositorio;
 
 	// Interfaz gráfica con tabla
-	ClienteItemModel clienteModelo;
-	private JTable tableCliente;
+	ProductoItemModel productoModelo;
+	private JTable tableProducto;
 
 	public boolean bandera = true;
 	private JComboBox cBOpcion;
 	private JTextField txtCriterio;
 	private JLabel lblNewLabel_2;
 	private JButton btnBuscar;
-	private JTextField txtTelefono;
 
-	public VentanaCliente() {
+	public VentanaProducto() {
 		setBackground(new Color(240, 240, 240));
 
 		this.setResizable(true);
@@ -77,21 +77,21 @@ public class VentanaCliente extends JInternalFrame {
 		this.setMaximizable(true);
 		this.setIconifiable(true);
 		interfazPersona();
-		clientes = new ArrayList<Cliente>();
+		productos = new ArrayList<Producto>();
 		setBounds(10, 10, 850, 386);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Mantenimiento de Personas");
+		JLabel lblNewLabel = new JLabel("Mantenimiento de Productos");
 		lblNewLabel.setBounds(5, 5, 424, 21);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Tahoma", Font.ITALIC, 17));
 		contentPane.add(lblNewLabel);
 
 		JLabel lblNewLabel_1 = new JLabel("Nombre:");
-		lblNewLabel_1.setBounds(46, 56, 60, 21);
+		lblNewLabel_1.setBounds(33, 56, 60, 21);
 		contentPane.add(lblNewLabel_1);
 
 		txtNombre = new JTextField();
@@ -99,32 +99,23 @@ public class VentanaCliente extends JInternalFrame {
 		contentPane.add(txtNombre);
 		txtNombre.setColumns(10);
 
-		JLabel lblNewLabel_1_1 = new JLabel("Apellido:");
-		lblNewLabel_1_1.setBounds(46, 88, 60, 21);
+		JLabel lblNewLabel_1_1 = new JLabel("Precio Unitario:");
+		lblNewLabel_1_1.setBounds(33, 88, 96, 21);
 		contentPane.add(lblNewLabel_1_1);
 
-		txtApellido = new JTextField();
-		txtApellido.setColumns(10);
-		txtApellido.setBounds(131, 87, 154, 20);
-		contentPane.add(txtApellido);
+		txtPrecioUnitario = new JTextField();
+		txtPrecioUnitario.setColumns(10);
+		txtPrecioUnitario.setBounds(131, 87, 154, 20);
+		contentPane.add(txtPrecioUnitario);
 
-		JLabel lblNewLabel_1_2 = new JLabel("Cédula:");
-		lblNewLabel_1_2.setBounds(46, 120, 60, 21);
+		JLabel lblNewLabel_1_2 = new JLabel("Cantidad:");
+		lblNewLabel_1_2.setBounds(33, 120, 73, 21);
 		contentPane.add(lblNewLabel_1_2);
 
-		txtCedula = new JTextField();
-		txtCedula.setColumns(10);
-		txtCedula.setBounds(131, 120, 154, 20);
-		contentPane.add(txtCedula);
-
-		JLabel lblNewLabel_1_3 = new JLabel("Dirección:");
-		lblNewLabel_1_3.setBounds(46, 149, 60, 21);
-		contentPane.add(lblNewLabel_1_3);
-
-		txtDireccion = new JTextField();
-		txtDireccion.setColumns(10);
-		txtDireccion.setBounds(131, 149, 154, 20);
-		contentPane.add(txtDireccion);
+		txtCantidad = new JTextField();
+		txtCantidad.setColumns(10);
+		txtCantidad.setBounds(131, 120, 154, 20);
+		contentPane.add(txtCantidad);
 
 		JButton btnGrabarPersona = new JButton("Grabar");
 		btnGrabarPersona.setSelectedIcon(
@@ -137,26 +128,23 @@ public class VentanaCliente extends JInternalFrame {
 				// persona = new Persona(txtNombre.getText(), txtApellido.getText(),
 				// txtCedula.getText(), txtDireccion.getText() );
 				if (bandera == true) {
-					cliente = new Cliente();
-					cliente.setNombre(txtNombre.getText());
-					cliente.setApellido(txtApellido.getText());
-					cliente.setCedula(txtCedula.getText());
-					cliente.setDireccion(txtDireccion.getText());
-					cliente.setTelefono(txtTelefono.getText());
+					producto = new Producto();
+					producto.setNombre(txtNombre.getText());
+					producto.setPrecioUnitario(Double.parseDouble(txtPrecioUnitario.getText()));
+					producto.setCantidad(Integer.parseInt(txtCantidad.getText()));
 
-					clienteRepositorio.save(cliente);
+
+					productoRepositorio.save(producto);
 				} else {
-					cliente = new Cliente();
-					cliente.setId(clienteSeleccionada.getId());
-					cliente.setNombre(txtNombre.getText());
-					cliente.setApellido(txtApellido.getText());
-					cliente.setCedula(txtCedula.getText());
-					cliente.setDireccion(txtDireccion.getText());
-					cliente.setTelefono(txtTelefono.getText());
-
-					clienteRepositorio.save(cliente);
+					producto = new Producto();
+					producto.setId(productoSeleccionada.getId());
+					producto.setNombre(txtNombre.getText());
+					producto.setPrecioUnitario(Double.parseDouble(txtPrecioUnitario.getText()));
+					producto.setCantidad(Integer.parseInt(txtCantidad.getText()));
+				
+					productoRepositorio.save(producto);
 					bandera = true;
-					txtCedula.setEnabled(true);
+					txtCantidad.setEnabled(true);
 				}
 
 				limpiarVentana();
@@ -164,7 +152,7 @@ public class VentanaCliente extends JInternalFrame {
 
 			}
 		});
-		btnGrabarPersona.setBounds(11, 212, 96, 40);
+		btnGrabarPersona.setBounds(10, 181, 96, 40);
 		contentPane.add(btnGrabarPersona);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -172,43 +160,42 @@ public class VentanaCliente extends JInternalFrame {
 		scrollPane.setBounds(315, 90, 451, 162);
 		contentPane.add(scrollPane);
 
-		tableCliente = new JTable();
-		tableCliente.addMouseListener(new MouseAdapter() {
+		tableProducto = new JTable();
+		tableProducto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// System.out.println(tablePersona.getSelectedRow());
 				btnEliminar.setEnabled(true);
 				btnActualizar.setEnabled(true);
-				System.out.println(clienteModelo.getPersonaAt(tableCliente.getSelectedRow()));
+				System.out.println(productoModelo.getPersonaAt(tableProducto.getSelectedRow()));
 
 			}
 		});
-		scrollPane.setViewportView(tableCliente);
+		scrollPane.setViewportView(tableProducto);
 
 		btnEliminar = new JButton("Eliminar");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				clienteRepositorio.delete(clienteModelo.getPersonaAt(tableCliente.getSelectedRow()));
+				productoRepositorio.delete(productoModelo.getPersonaAt(tableProducto.getSelectedRow()));
 				generarTabla();
 				btnEliminar.setEnabled(false);
 				btnActualizar.setEnabled(false);
 			}
 		});
 		btnEliminar.setEnabled(false);
-		btnEliminar.setBounds(117, 211, 89, 41);
+		btnEliminar.setBounds(116, 180, 89, 41);
 		contentPane.add(btnEliminar);
 
 		btnActualizar = new JButton("Actualizar");
 		btnActualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				clienteSeleccionada = clienteModelo.getPersonaAt(tableCliente.getSelectedRow());
-				txtNombre.setText(clienteSeleccionada.getNombre());
-				txtApellido.setText(clienteSeleccionada.getApellido());
-				txtCedula.setText(clienteSeleccionada.getCedula());
-				txtDireccion.setText(clienteSeleccionada.getDireccion());
-				txtTelefono.setText(clienteSeleccionada.getTelefono());
-				txtCedula.setEnabled(false);
+				productoSeleccionada = productoModelo.getPersonaAt(tableProducto.getSelectedRow());
+				txtNombre.setText(productoSeleccionada.getNombre());
+				txtPrecioUnitario.setText(productoSeleccionada.getPrecioUnitario()+"");
+				txtCantidad.setText(productoSeleccionada.getCantidad()+"");
+
+				txtCantidad.setEnabled(false);
 				bandera = false;
 
 				btnEliminar.setEnabled(false);
@@ -217,11 +204,11 @@ public class VentanaCliente extends JInternalFrame {
 			}
 		});
 		btnActualizar.setEnabled(false);
-		btnActualizar.setBounds(216, 212, 89, 40);
+		btnActualizar.setBounds(215, 181, 89, 40);
 		contentPane.add(btnActualizar);
 		
 		cBOpcion = new JComboBox();
-		cBOpcion.setModel(new DefaultComboBoxModel(new String[] {"", "Nombre", "Apellido", "Cédula"}));
+		cBOpcion.setModel(new DefaultComboBoxModel(new String[] {"", "Nombre"}));
 		cBOpcion.setBounds(315, 55, 77, 22);
 		contentPane.add(cBOpcion);
 		
@@ -240,37 +227,17 @@ public class VentanaCliente extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				String opcion= cBOpcion.getSelectedItem().toString();
 				String criterio = txtCriterio.getText();
-				List<Cliente> resultadoBusqueda = new ArrayList<>();
+				List<Producto> resultadoBusqueda = new ArrayList<>();
 				if(opcion.equals("Nombre"))
 				{
 					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de busqueda
-					resultadoBusqueda = clienteRepositorio.buscarPorNombre("%"+criterio+"%");
-					generarTablaBusqueda(resultadoBusqueda);
-				}
-				if(opcion.equals("Apellido"))
-				{
-					resultadoBusqueda = clienteRepositorio.findByApellidoLike("%"+criterio+"%");
-					generarTablaBusqueda(resultadoBusqueda);
-					
-				}
-				if(opcion.equals("Cédula"))
-				{
-					resultadoBusqueda = clienteRepositorio.findByCedulaLike("%"+criterio+"%");
+					resultadoBusqueda = productoRepositorio.buscarPorNombre("%"+criterio+"%");
 					generarTablaBusqueda(resultadoBusqueda);
 				}
 			}
 		});
 		btnBuscar.setBounds(687, 37, 79, 34);
 		contentPane.add(btnBuscar);
-		
-		JLabel lblNewLabel_1_3_1 = new JLabel("Teléfono:");
-		lblNewLabel_1_3_1.setBounds(46, 181, 60, 21);
-		contentPane.add(lblNewLabel_1_3_1);
-		
-		txtTelefono = new JTextField();
-		txtTelefono.setColumns(10);
-		txtTelefono.setBounds(131, 181, 154, 20);
-		contentPane.add(txtTelefono);
 	}
 
 	public void interfazPersona() {
@@ -279,26 +246,24 @@ public class VentanaCliente extends JInternalFrame {
 
 	public void limpiarVentana() {
 		txtNombre.setText("");
-		txtApellido.setText("");
-		txtCedula.setText("");
-		txtDireccion.setText("");
-		txtTelefono.setText("");
-
+		txtPrecioUnitario.setText("");
+		txtCantidad.setText("");
 	}
 
 	@PostConstruct
 	public void generarTabla() {
 
-		clientes = clienteRepositorio.findAll();
+		productos = productoRepositorio.findAll();
 
-		clienteModelo = new ClienteItemModel(clientes);
-		tableCliente.setModel(clienteModelo);
+		productoModelo = new ProductoItemModel(productos);
+		tableProducto.setModel(productoModelo);
 
 	}
 	
-	public void generarTablaBusqueda(List<Cliente> personas)
+	public void generarTablaBusqueda(List<Producto> productos)
 	{
-		clienteModelo = new ClienteItemModel(personas);
-		tableCliente.setModel(clienteModelo);
+		productoModelo = new ProductoItemModel(productos);
+		tableProducto.setModel(productoModelo);
 	}
+
 }

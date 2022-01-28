@@ -9,7 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import edu.ucacue.facturacion2.controller.PrincipalUI;
-import edu.ucacue.facturacion2.controller.persona.VentanaPersona;
+import edu.ucacue.facturacion2.controller.cliente.VentanaCliente;
 
 @SpringBootApplication
 public class Facturacion2Application {
@@ -22,7 +22,6 @@ public class Facturacion2Application {
 
 		PrincipalUI ventana = contexto.getBean(PrincipalUI.class);
 		ventana.setVisible(true);
-		ventana.insertarCFEjemplo();
 	}
 
 }

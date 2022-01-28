@@ -1,55 +1,55 @@
-package edu.ucacue.facturacion2.controller.cliente;
+package edu.ucacue.facturacion2.controller.producto;
+
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import edu.ucacue.facturacion2.modelo.Cliente;
+import edu.ucacue.facturacion2.modelo.Producto;
 
-public class ClienteItemModel extends AbstractTableModel {
+
+public class ProductoItemModel extends AbstractTableModel {
 	
 	
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	private List<Cliente> personas;
-	private static final String[] COLUMN_NAMES = {"Nombre", "Apellido", "Cédula", "Dirección"};
+	private List<Producto> productos;
+	private static final String[] COLUMN_NAMES = {"Nombre", "Precio Unitario", "Existencias"};
 
-	public ClienteItemModel(List<Cliente> personas) {
+	public ProductoItemModel(List<Producto> productos) {
 
-		this.personas = personas;
+		this.productos = productos;
 
 	}
 
 	@Override
 	public int getRowCount() {
-		return personas.size();
+		return productos.size();
 	}
 
 	@Override
 	public int getColumnCount() {
-		return 4;
+		return 3;
 	}
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
 		Object value = "??";
-		Cliente persona = personas.get(rowIndex);
+		Producto producto = productos.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
-			value = persona.getNombre();
+			value = producto.getNombre();
 			break;
 		case 1:
-			value = persona.getApellido();
+			value = producto.getPrecioUnitario();
 			break;
 		case 2:
-			value = persona.getCedula();
+			value = producto.getCantidad();
 			break;
-		case 3:
-			value = persona.getDireccion();
-			break;
+
 		}
 
 		return value;
@@ -58,7 +58,7 @@ public class ClienteItemModel extends AbstractTableModel {
 
 	@Override
     public Class<?> getColumnClass(int columnIndex) {
-        return Cliente.class;
+        return Producto.class;
     }
 	
     //the column header
@@ -81,8 +81,8 @@ public class ClienteItemModel extends AbstractTableModel {
 	 * @return
 	 */
     
-	public Cliente getPersonaAt(int row) {
-		return personas.get(row);
+	public Producto getPersonaAt(int row) {
+		return productos.get(row);
 	}
 
 

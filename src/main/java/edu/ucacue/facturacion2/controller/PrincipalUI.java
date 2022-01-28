@@ -9,25 +9,15 @@ import javax.swing.JPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import edu.ucacue.facturacion2.controller.cliente.VentanaCliente;
 import edu.ucacue.facturacion2.controller.factura.VentanaFactura;
-import edu.ucacue.facturacion2.controller.persona.VentanaPersona;
-import edu.ucacue.facturacion2.infraestructura.repositorio.CabeceraFacturaRepository;
-import edu.ucacue.facturacion2.infraestructura.repositorio.ClienteRepository;
-import edu.ucacue.facturacion2.infraestructura.repositorio.EmpresaRepository;
-import edu.ucacue.facturacion2.infraestructura.repositorio.ProductoRepository;
-import edu.ucacue.facturacion2.modelo.CabeceraFactura;
-import edu.ucacue.facturacion2.modelo.Cliente;
-import edu.ucacue.facturacion2.modelo.DetalleFactura;
-import edu.ucacue.facturacion2.modelo.Empresa;
-import edu.ucacue.facturacion2.modelo.Producto;
+import edu.ucacue.facturacion2.controller.producto.VentanaProducto;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 import java.awt.event.ActionEvent;
 
 @Controller
@@ -39,23 +29,14 @@ public class PrincipalUI extends JFrame {
 	private JPanel contentPane;
 
 	@Autowired
-	VentanaPersona ventanaPersona;
-	
-	@Autowired
-	CabeceraFacturaRepository cabeceraFacturaRepository;
-	
-	@Autowired
-	ClienteRepository clienteRepository;
-	
-	@Autowired
-	EmpresaRepository empresaRepository;
-	
-	@Autowired
-	ProductoRepository productoRepository;
+	VentanaCliente ventanaCliente;
+
 	
 	@Autowired
 	VentanaFactura ventanaFactura;
 	
+	@Autowired
+	VentanaProducto ventanaProducto;
 
 	/**
 	 * Create the frame.
@@ -64,28 +45,40 @@ public class PrincipalUI extends JFrame {
 	JDesktopPane desktopPane;
 	public PrincipalUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(250, 10, 1000, 500);
+		setBounds(200, 2, 1000, 600);
 		
 
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("Persona");
+		JMenu mnNewMenu = new JMenu("Cliente");
 		menuBar.add(mnNewMenu);
 		
 		JMenuItem mntmNewMenuItem = new JMenuItem("Mantenimiento");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ventanaPersona.setVisible(true);
-				ventanaPersona.generarTabla();
-				desktopPane.add(ventanaPersona);
+				ventanaCliente.setVisible(true);
+				ventanaCliente.generarTabla();
+				desktopPane.add(ventanaCliente);
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Reporte");
 		mnNewMenu.add(mntmNewMenuItem_1);
+		
+		JMenu mnNewMenu_3 = new JMenu("Producto");
+		menuBar.add(mnNewMenu_3);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Mantenimiento");
+		mntmNewMenuItem_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ventanaProducto.setVisible(true);
+				desktopPane.add(ventanaProducto);
+			}
+		});
+		mnNewMenu_3.add(mntmNewMenuItem_3);
 		
 		JMenu mnNewMenu_1 = new JMenu("Empresa");
 		menuBar.add(mnNewMenu_1);
@@ -110,49 +103,5 @@ public class PrincipalUI extends JFrame {
 		getContentPane().add(desktopPane);
 	}
 	
-	public void insertarCFEjemplo() {
-		
-		
-	Cliente cliente = 	clienteRepository.findById(1).get();
-	Empresa empresa = empresaRepository.findById(1).get();
 	
-	CabeceraFactura cF = new CabeceraFactura();	
-	
-	cF.setCliente(cliente);
-	cF.setEmpresa(empresa);
-	cF.setNumeroFactura(1000);
-	cF.setFechaCompra(new Date());
-	
-	
-	//Empiezo a generar los detalles de cada Factura
-	
-	List<DetalleFactura> detalles = new ArrayList<>(); 
-	
-	DetalleFactura dF1 = new DetalleFactura();
-	Producto producto1 = productoRepository.findById(1).get();
-	dF1.setCantidad(8);
-	dF1.setCabeceraFactura(cF);
-	dF1.setProducto(producto1);
-	dF1.calcularTotal();
-	
-	DetalleFactura dF2 = new DetalleFactura();
-	Producto producto2 = productoRepository.findById(2).get();
-	dF2.setCantidad(7);
-	dF2.setCabeceraFactura(cF);
-	dF2.setProducto(producto2);
-	dF2.calcularTotal();
-	
-
-	
-	detalles.add(dF1);
-	detalles.add(dF2);
-
-	
-	cF.setDetallesFacturas(detalles);
-	
-	
-	cabeceraFacturaRepository.save(cF);
-	
-	
-	}
 }

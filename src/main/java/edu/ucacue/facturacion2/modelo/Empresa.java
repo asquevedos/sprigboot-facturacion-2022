@@ -12,7 +12,7 @@ public class Empresa {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+	private String nombre;
 	private String razonSocial;
 	private String direccion;
 	private String telefono;
@@ -67,6 +67,14 @@ public class Empresa {
 
 	public void setRuc(String ruc) {
 		this.ruc = ruc;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 	
 	

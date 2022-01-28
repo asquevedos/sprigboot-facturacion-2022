@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="personas")
-public class Persona {
+@Table(name="clientes")
+public class Cliente {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,11 @@ public class Persona {
 	
 	@Column(unique = true, nullable = false)
 	private String cedula;
-	
+	private String telefono;
 	private String direccion;
 		
 	
-	public Persona(int id, String nombre, String apellido, String cedula) {
+	public Cliente(int id, String nombre, String apellido, String cedula) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -37,7 +37,7 @@ public class Persona {
 	
 	
 	
-	public Persona(String nombre, String apellido, String cedula, String direccion) {
+	public Cliente(String nombre, String apellido, String cedula, String direccion) {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -48,7 +48,7 @@ public class Persona {
 
 
 
-	public Persona() {
+	public Cliente() {
 		super();
 	}
 
@@ -88,6 +88,20 @@ public class Persona {
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+
+
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+
+
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
 	}
 
 

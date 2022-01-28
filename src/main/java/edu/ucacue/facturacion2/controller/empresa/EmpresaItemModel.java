@@ -1,30 +1,32 @@
-package edu.ucacue.facturacion2.controller.cliente;
+package edu.ucacue.facturacion2.controller.empresa;
+
+
 
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import edu.ucacue.facturacion2.modelo.Cliente;
+import edu.ucacue.facturacion2.modelo.Empresa;
 
-public class ClienteItemModel extends AbstractTableModel {
-	
-	
+public class EmpresaItemModel extends AbstractTableModel{
+
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
-	private List<Cliente> personas;
-	private static final String[] COLUMN_NAMES = {"Nombre", "Apellido", "Cédula", "Dirección"};
+	private List<Empresa> empresas;
 
-	public ClienteItemModel(List<Cliente> personas) {
+	private static final String[] COLUMN_NAMES = {"Razon Social", "Ruc", "Telefono","Dirección"};
 
-		this.personas = personas;
+	public EmpresaItemModel(List<Empresa> empresas) {
+
+		this.empresas = empresas;
 
 	}
 
 	@Override
 	public int getRowCount() {
-		return personas.size();
+		return empresas.size();
 	}
 
 	@Override
@@ -36,21 +38,22 @@ public class ClienteItemModel extends AbstractTableModel {
 	public Object getValueAt(int rowIndex, int columnIndex) {
 
 		Object value = "??";
-		Cliente persona = personas.get(rowIndex);
+		Empresa empresa = empresas.get(rowIndex);
 		switch (columnIndex) {
 		case 0:
-			value = persona.getNombre();
+			value = empresa.getRazonSocial();
 			break;
 		case 1:
-			value = persona.getApellido();
+			value = empresa.getRuc();
 			break;
 		case 2:
-			value = persona.getCedula();
+			value = empresa.getTelefono();
 			break;
 		case 3:
-			value = persona.getDireccion();
+			value = empresa.getDireccion();
 			break;
 		}
+		//int id, String nombre, String ruc, String direccion
 
 		return value;
 
@@ -58,7 +61,7 @@ public class ClienteItemModel extends AbstractTableModel {
 
 	@Override
     public Class<?> getColumnClass(int columnIndex) {
-        return Cliente.class;
+        return Empresa.class;
     }
 	
     //the column header
@@ -81,9 +84,8 @@ public class ClienteItemModel extends AbstractTableModel {
 	 * @return
 	 */
     
-	public Cliente getPersonaAt(int row) {
-		return personas.get(row);
+	public Empresa getEmpresaAt(int row) {
+		return empresas.get(row);
 	}
-
 
 }

@@ -6,19 +6,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import edu.ucacue.facturacion2.modelo.Persona;
+import edu.ucacue.facturacion2.modelo.Cliente;
 
-public interface PersonaRepositorio extends JpaRepository<Persona, Integer> {
+public interface ClienteRepositorio extends JpaRepository<Cliente, Integer> {
 	
-	List<Persona> findByNombreLike(String nombre);
-	List<Persona> findByApellidoLike(String apellido);
-	List<Persona> findByCedulaLike(String cedula);
-	List<Persona> findByNombreAndApellido(String nombre, String apellido);
+	List<Cliente> findByNombreLike(String nombre);
+	List<Cliente> findByApellidoLike(String apellido);
+	List<Cliente> findByCedulaLike(String cedula);
+	List<Cliente> findByNombreAndApellido(String nombre, String apellido);
 	
 	
 	///JPQL
-	@Query("select p from Persona p where p.nombre like :nom")
-	List<Persona> buscarPorNombre(@Param("nom") String nombre);
+	@Query("select c from Cliente c where c.nombre like :nom")
+	List<Cliente> buscarPorNombre(@Param("nom") String nombre);
 	
 
 

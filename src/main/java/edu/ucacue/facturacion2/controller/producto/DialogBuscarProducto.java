@@ -1,4 +1,4 @@
-package edu.ucacue.facturacion2.controller.cliente;
+package edu.ucacue.facturacion2.controller.producto;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import edu.ucacue.facturacion2.infraestructura.repositorio.ClienteRepositorio;
+import edu.ucacue.facturacion2.infraestructura.repositorio.ProductoRepository;
 import edu.ucacue.facturacion2.modelo.Cliente;
+import edu.ucacue.facturacion2.modelo.Producto;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -27,23 +29,23 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 @Controller
-public class DialogBuscarCliente extends JDialog {
+public class DialogBuscarProducto extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtCriterio;
 	public JButton okButton;
 
-	ClienteItemModel personaModelo;
-	private JTable tablePersona;
+	ProductoItemModel productoModelo;
+	private JTable tableProducto;
 
-	public Cliente persona;
-	public Cliente personaSeleccionada;
-	public List<Cliente> personas;
+	public Producto producto;
+	public Producto productoSeleccionada;
+	public List<Producto> productos;
 
 	@Autowired
-	ClienteRepositorio personaRepositorio;
+	ProductoRepository productoRepositorio;
 
-	public DialogBuscarCliente() {
+	public DialogBuscarProducto() {
 		setBounds(100, 100, 563, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -92,8 +94,8 @@ public class DialogBuscarCliente extends JDialog {
 		scrollPane.setBounds(50, 55, 451, 162);
 		contentPanel.add(scrollPane);
 
-		tablePersona = new JTable();
-		tablePersona.addMouseListener(new MouseAdapter() {
+		tableProducto = new JTable();
+		tableProducto.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// System.out.println(tablePersona.getSelectedRow());
@@ -103,28 +105,28 @@ public class DialogBuscarCliente extends JDialog {
 
 			}
 		});
-		scrollPane.setViewportView(tablePersona);
+		scrollPane.setViewportView(tableProducto);
 	}
 
 	@PostConstruct
 	public void generarTabla() {
 
-		personas = personaRepositorio.findAll();
+		productos = productoRepositorio.findAll();
 
-		personaModelo = new ClienteItemModel(personas);
-		tablePersona.setModel(personaModelo);
+		productoModelo = new ProductoItemModel(productos);
+		tableProducto.setModel(productoModelo);
 
 	}
 
-	public void generarTablaBusqueda(List<Cliente> personas) {
-		personaModelo = new ClienteItemModel(personas);
-		tablePersona.setModel(personaModelo);
+	public void generarTablaBusqueda(List<Producto> productos) {
+		productoModelo = new ProductoItemModel(productos);
+		tableProducto.setModel(productoModelo);
 	}
 
-	public Cliente personaSeleccionada() {
+	public Producto personaSeleccionada() {
 
-		Cliente personaSeleccionada = personaModelo.getPersonaAt(tablePersona.getSelectedRow());
-		return personaSeleccionada;
+		Producto productoSeleccionada = productoModelo.getPersonaAt(tableProducto.getSelectedRow());
+		return productoSeleccionada;
 	}
 
 }

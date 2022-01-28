@@ -1,6 +1,7 @@
 package edu.ucacue.facturacion2.controller.factura;
 
 import java.awt.EventQueue;
+import java.awt.Font;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -8,109 +9,379 @@ import javax.swing.JLabel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import edu.ucacue.facturacion2.controller.persona.DialogBuscarPersona;
+import edu.ucacue.facturacion2.controller.cliente.ClienteItemModel;
+import edu.ucacue.facturacion2.controller.cliente.DialogBuscarCliente;
+import edu.ucacue.facturacion2.controller.empresa.DialogBuscarEmpresa;
+import edu.ucacue.facturacion2.infraestructura.repositorio.ProductoRepository;
 import edu.ucacue.facturacion2.modelo.CabeceraFactura;
-import edu.ucacue.facturacion2.modelo.Persona;
+import edu.ucacue.facturacion2.modelo.Cliente;
+import edu.ucacue.facturacion2.modelo.DetalleFactura;
+import edu.ucacue.facturacion2.modelo.Empresa;
+import edu.ucacue.facturacion2.modelo.Producto;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 @Controller
 public class VentanaFactura extends JInternalFrame {
+	JTextArea txtAreaNombre;
+	JTextArea txtAreaApellido;
+	JTextArea txtAreaCedula;
+	JTextArea txtAreaDireccion;
+	JTextArea txtAreaTelefono;
 
-	/**
-	 * Launch the application.
-	 */
-
-
-	/**
-	 * Create the frame.
-	 */
+	JTextArea txtAreaNombreEmp;
+	JTextArea txtAreaDireccionEmp;
+	JTextArea txtAreaRUCEmp;
+	JTextArea txtAreaRazonSocialEmp;
+	JTextArea txtAreaTelefonoEmp;
 	
-	JLabel lblNombre;
-	JLabel lblApellido;
-	JLabel lblCedula;
-	JLabel lblDireccion;
+	DetalleFacturaItemModel detalleFacturaModelo;
+	private JTable tableDetalleFactura;
+	List<DetalleFactura> detallesFactura;
+
+	@Autowired
+	DialogBuscarCliente buscarCliente;
+	@Autowired
+	DialogBuscarEmpresa buscarEmpresa;
 	
 	@Autowired
-	DialogBuscarPersona buscarPersona;
-	
-	
-	Persona personaSeleccionada;
+	ProductoRepository productoRepositorio;
 
+	Cliente clienteSeleccionada;
+	Empresa empresaSeleccionada;
 	CabeceraFactura cabeceraFactura;
-	
+	private JTextField txtIdProducto;
+
 	public VentanaFactura() {
-		cabeceraFactura = new CabeceraFactura();
-		setBounds(100, 100, 615, 300);
-		getContentPane().setLayout(null);
+		setTitle("Facturación");
+		setBackground(Color.LIGHT_GRAY);
 		
+		detallesFactura = new ArrayList<>();
+
+		setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+
+		cabeceraFactura = new CabeceraFactura();
+		setBounds(90, 10, 815,520);
+		getContentPane().setLayout(null);
+
 		this.setResizable(true);
 		this.setMaximizable(true);
 		this.setClosable(true);
 		this.setIconifiable(true);
-		
-		JLabel lblNewLabel_1 = new JLabel("Escoger la empresa que estás realizando la factura");
-		lblNewLabel_1.setBounds(496, 11, 78, 14);
+
+		JLabel lblNewLabel = new JLabel("Seleccionar Cliente:");
+		lblNewLabel.setFont(new Font("Courier New", Font.BOLD | Font.ITALIC, 12));
+		lblNewLabel.setBounds(34, 198, 152, 14);
+		getContentPane().add(lblNewLabel);
+
+		JLabel lblNewLabel_1 = new JLabel("Seleccionar Empresa gestora:");
+		lblNewLabel_1.setFont(new Font("Courier New", Font.BOLD | Font.ITALIC, 12));
+		lblNewLabel_1.setBounds(34, 35, 213, 13);
 		getContentPane().add(lblNewLabel_1);
-		
-		JLabel lblNewLabel_2 = new JLabel("los detalles de las facturas");
-		lblNewLabel_2.setBounds(69, 139, 291, 14);
+
+		JLabel lblNewLabel_2 = new JLabel("Id del producto:");
+		lblNewLabel_2.setFont(new Font("Courier New", Font.BOLD | Font.ITALIC, 14));
+		lblNewLabel_2.setBounds(10, 289, 144, 13);
 		getContentPane().add(lblNewLabel_2);
-		
-		JButton btnBuscarPersona = new JButton("Buscar Persona");
+
+		JButton btnBuscarPersona = new JButton("Buscar");
 		btnBuscarPersona.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				buscarPersona.setVisible(true);
-				
-				buscarPersona.okButton.addActionListener(new ActionListener() {
-					
+
+				buscarCliente.setVisible(true);
+				buscarCliente.generarTabla();
+
+				buscarCliente.okButton.addActionListener(new ActionListener() {
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
-						personaSeleccionada = buscarPersona.personaSeleccionada();
+
+						clienteSeleccionada = buscarCliente.personaSeleccionada();
 						cabeceraFactura.setCliente(null);
-						llenarDatosPersona();
-						buscarPersona.setVisible(false);
+						llenarDatosCliente();
+						buscarCliente.setVisible(false);
 					}
 				});
+
 			}
 		});
-		btnBuscarPersona.setBounds(10, 21, 107, 23);
+		btnBuscarPersona.setFont(new Font("Courier New", Font.BOLD, 12));
+		btnBuscarPersona.setBounds(196, 186, 117, 26);
 		getContentPane().add(btnBuscarPersona);
-		
+
 		JSeparator separator = new JSeparator();
-		separator.setBounds(124, 11, 276, 96);
+		separator.setBounds(10, 175, 783, 13);
 		getContentPane().add(separator);
+
+		JLabel lblNewLabel_3 = new JLabel("Nombre");
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_3.setBounds(10, 228, 91, 13);
+		getContentPane().add(lblNewLabel_3);
+
+		JLabel lblNewLabel_4 = new JLabel("Apellido");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_4.setBounds(408, 228, 91, 13);
+		getContentPane().add(lblNewLabel_4);
+
+		JLabel lblNewLabel_5 = new JLabel("Cédula");
+		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_5.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_5.setBounds(317, 191, 91, 13);
+		getContentPane().add(lblNewLabel_5);
+
+		JLabel lblNewLabel_6 = new JLabel("Dirección");
+		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_6.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_6.setBounds(10, 257, 106, 13);
+		getContentPane().add(lblNewLabel_6);
+
+		JLabel lblNewLabel_7 = new JLabel("Teléfono");
+		lblNewLabel_7.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_7.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_7.setBounds(408, 261, 88, 13);
+		getContentPane().add(lblNewLabel_7);
+
+		JButton btnBuscarEmpresa = new JButton("Buscar");
+		btnBuscarEmpresa.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				buscarEmpresa.setVisible(true);
+
+				buscarEmpresa.okButton.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+
+						empresaSeleccionada = buscarEmpresa.empresaSeleccionada();
+						cabeceraFactura.setEmpresa(null);
+						llenarDatosEmpresa();
+						buscarEmpresa.setVisible(false);
+					}
+				});
+
+			}
+		});
+		btnBuscarEmpresa.setFont(new Font("Courier New", Font.BOLD, 12));
+		btnBuscarEmpresa.setBounds(234, 24, 100, 35);
+		getContentPane().add(btnBuscarEmpresa);
+
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setBounds(10, 0, 783, 174);
+		getContentPane().add(separator_1);
+
+		JLabel lblNewLabel_8 = new JLabel("Nombre");
+		lblNewLabel_8.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_8.setBounds(34, 86, 69, 13);
+		getContentPane().add(lblNewLabel_8);
+
+		JLabel lblNewLabel_8_1 = new JLabel("Dirección");
+		lblNewLabel_8_1.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_8_1.setBounds(34, 116, 69, 13);
+		getContentPane().add(lblNewLabel_8_1);
+
+		JLabel lblNewLabel_8_2 = new JLabel("RUC");
+		lblNewLabel_8_2.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_8_2.setBounds(32, 140, 69, 13);
+		getContentPane().add(lblNewLabel_8_2);
+
+		JLabel lblNewLabel_8_2_1 = new JLabel("Razón Social");
+		lblNewLabel_8_2_1.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_8_2_1.setBounds(408, 147, 91, 13);
+		getContentPane().add(lblNewLabel_8_2_1);
+
+		JLabel lblNewLabel_8_2_2 = new JLabel("Teléfono");
+		lblNewLabel_8_2_2.setFont(new Font("Courier New", Font.BOLD, 12));
+		lblNewLabel_8_2_2.setBounds(408, 116, 69, 13);
+		getContentPane().add(lblNewLabel_8_2_2);
+
+		txtAreaNombreEmp = new JTextArea();
+		txtAreaNombreEmp.setEnabled(false);
+		txtAreaNombreEmp.setEditable(false);
+		txtAreaNombreEmp.setBounds(126, 80, 343, 22);
+		getContentPane().add(txtAreaNombreEmp);
+
+		txtAreaDireccionEmp = new JTextArea();
+		txtAreaDireccionEmp.setEnabled(false);
+		txtAreaDireccionEmp.setEditable(false);
+		txtAreaDireccionEmp.setBounds(126, 110, 272, 22);
+		getContentPane().add(txtAreaDireccionEmp);
+
+		txtAreaRUCEmp = new JTextArea();
+		txtAreaRUCEmp.setEnabled(false);
+		txtAreaRUCEmp.setEditable(false);
+		txtAreaRUCEmp.setBounds(126, 140, 272, 22);
+		getContentPane().add(txtAreaRUCEmp);
+
+		txtAreaRazonSocialEmp = new JTextArea();
+		txtAreaRazonSocialEmp.setEnabled(false);
+		txtAreaRazonSocialEmp.setEditable(false);
+		txtAreaRazonSocialEmp.setBounds(509, 140, 196, 22);
+		getContentPane().add(txtAreaRazonSocialEmp);
+
+		txtAreaTelefonoEmp = new JTextArea();
+		txtAreaTelefonoEmp.setEnabled(false);
+		txtAreaTelefonoEmp.setEditable(false);
+		txtAreaTelefonoEmp.setBounds(509, 109, 196, 22);
+		getContentPane().add(txtAreaTelefonoEmp);
+
+		txtAreaNombre = new JTextArea();
+		txtAreaNombre.setEnabled(false);
+		txtAreaNombre.setEditable(false);
+		txtAreaNombre.setBounds(126, 223, 272, 22);
+		getContentPane().add(txtAreaNombre);
+
+		txtAreaApellido = new JTextArea();
+		txtAreaApellido.setEnabled(false);
+		txtAreaApellido.setEditable(false);
+		txtAreaApellido.setBounds(487, 219, 196, 22);
+		getContentPane().add(txtAreaApellido);
+
+		txtAreaCedula = new JTextArea();
+		txtAreaCedula.setEnabled(false);
+		txtAreaCedula.setEditable(false);
+		txtAreaCedula.setBounds(433, 186, 272, 22);
+		getContentPane().add(txtAreaCedula);
+
+		txtAreaDireccion = new JTextArea();
+		txtAreaDireccion.setEnabled(false);
+		txtAreaDireccion.setEditable(false);
+		txtAreaDireccion.setBounds(126, 252, 272, 22);
+		getContentPane().add(txtAreaDireccion);
+
+		txtAreaTelefono = new JTextArea();
+		txtAreaTelefono.setEnabled(false);
+		txtAreaTelefono.setEditable(false);
+		txtAreaTelefono.setBounds(487, 252, 196, 22);
+		getContentPane().add(txtAreaTelefono);
 		
-		 lblNombre = new JLabel("");
-		lblNombre.setBounds(127, 11, 93, 14);
-		getContentPane().add(lblNombre);
+		JLabel lblNewLabel_10 = new JLabel("FACTURA ELECTRÓNICA");
+		lblNewLabel_10.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_10.setFont(new Font("Courier New", Font.PLAIN, 15));
+		lblNewLabel_10.setBounds(529, 54, 190, 13);
+		getContentPane().add(lblNewLabel_10);
 		
-		lblApellido = new JLabel("");
-		lblApellido.setBounds(230, 11, 113, 14);
-		getContentPane().add(lblApellido);
+		JLabel lblNewLabel_11 = new JLabel("Nº folio no asignado");
+		lblNewLabel_11.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_11.setFont(new Font("Courier New", Font.PLAIN, 15));
+		lblNewLabel_11.setBounds(509, 77, 223, 13);
+		getContentPane().add(lblNewLabel_11);
 		
-		 lblCedula = new JLabel("");
-		lblCedula.setBounds(127, 30, 46, 14);
-		getContentPane().add(lblCedula);
+		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(204, 51, 51), 2));
+		panel.setBounds(509, 13, 223, 86);
+		getContentPane().add(panel);
 		
-		lblDireccion = new JLabel("");
-		lblDireccion.setBounds(124, 58, 46, 14);
-		getContentPane().add(lblDireccion);
+		JLabel lblNewLabel_9 = new JLabel("Rut 44300251-0\r\n\r\n");
+		panel.add(lblNewLabel_9);
+		lblNewLabel_9.setForeground(new Color(204, 51, 51));
+		lblNewLabel_9.setFont(new Font("Courier New", Font.BOLD, 15));
+		lblNewLabel_9.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_9.setToolTipText("");
+		
+		JSeparator separator_2 = new JSeparator();
+		separator_2.setBounds(10, 281, 783, 3);
+		getContentPane().add(separator_2);
+		
+		txtIdProducto = new JTextField();
+		txtIdProducto.setBounds(164, 285, 40, 20);
+		getContentPane().add(txtIdProducto);
+		txtIdProducto.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Aceptar");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DetalleFactura detalleFactura = new DetalleFactura();
+				int idProducto= Integer.parseInt(txtIdProducto.getText());
+				Producto producto=productoRepositorio.findById(idProducto).get();
+				detalleFactura.setProducto(producto);
+				detalleFactura.setCantidad(1);
+				detallesFactura.add(detalleFactura);
+				llenarDatosDetallFactura();
+			}
+		});
+		btnNewButton.setBounds(210, 285, 81, 23);
+		getContentPane().add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Buscar");
+		btnNewButton_1.setBounds(291, 285, 81, 23);
+		getContentPane().add(btnNewButton_1);
+		
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setBounds(20, 317, 699, 111);
+		getContentPane().add(scrollPane);
+
+		tableDetalleFactura = new JTable();
+		
+		scrollPane.setViewportView(tableDetalleFactura);
+		
+		JLabel lblNewLabel_12 = new JLabel("I.V.A:");
+		lblNewLabel_12.setBounds(564, 451, 62, 14);
+		getContentPane().add(lblNewLabel_12);
+		
+		JLabel lblNewLabel_12_1 = new JLabel("Sub Total:");
+		lblNewLabel_12_1.setBounds(564, 439, 62, 14);
+		getContentPane().add(lblNewLabel_12_1);
+		
+		JLabel lblNewLabel_12_2 = new JLabel("Total:");
+		lblNewLabel_12_2.setBounds(564, 464, 62, 14);
+		getContentPane().add(lblNewLabel_12_2);
+		
+		JLabel lblSubTotal = new JLabel("a");
+		lblSubTotal.setBounds(641, 439, 76, 14);
+		getContentPane().add(lblSubTotal);
+		
+		JLabel lblIVA = new JLabel("a");
+		lblIVA.setBounds(641, 451, 76, 14);
+		getContentPane().add(lblIVA);
+		
+		JLabel lblTotal = new JLabel("a");
+		lblTotal.setBounds(641, 464, 73, 14);
+		getContentPane().add(lblTotal);
 
 	}
+
+	public void llenarDatosCliente() {
+
+		txtAreaNombre.setText(clienteSeleccionada.getNombre());
+		txtAreaApellido.setText(clienteSeleccionada.getApellido());
+		txtAreaCedula.setText(clienteSeleccionada.getCedula());
+		txtAreaDireccion.setText(clienteSeleccionada.getDireccion());
+		txtAreaTelefono.setText(clienteSeleccionada.getTelefono());
+	}
+
+	public void llenarDatosEmpresa() {
+
+		txtAreaNombreEmp.setText(empresaSeleccionada.getNombre());
+		txtAreaDireccionEmp.setText(empresaSeleccionada.getDireccion());
+		txtAreaRUCEmp.setText(empresaSeleccionada.getRuc());
+		txtAreaRazonSocialEmp.setText(empresaSeleccionada.getRazonSocial());
+		txtAreaTelefonoEmp.setText(empresaSeleccionada.getTelefono());
+	}
 	
-	public void llenarDatosPersona() {
+	public void llenarDatosDetallFactura()
+	{
+		detalleFacturaModelo = new DetalleFacturaItemModel(detallesFactura);
+		tableDetalleFactura.setModel(detalleFacturaModelo);
 		
-		lblNombre.setText(personaSeleccionada.getNombre());
-		lblApellido.setText(personaSeleccionada.getApellido());
-		lblCedula.setText(personaSeleccionada.getCedula());
-		lblDireccion.setText(personaSeleccionada.getDireccion());
 	}
 }
