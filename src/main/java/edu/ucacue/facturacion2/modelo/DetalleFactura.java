@@ -16,7 +16,7 @@ public class DetalleFactura {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idDetalleFactura;
 
-	private double cantidad;
+	private int cantidad;
 	private double total;
 
 	@ManyToOne
@@ -31,7 +31,7 @@ public class DetalleFactura {
 
 	}
 
-	public DetalleFactura(int id, double cantidad, double total, Producto producto, CabeceraFactura cabeceraFactura) {
+	public DetalleFactura(int id, int cantidad, double total, Producto producto, CabeceraFactura cabeceraFactura) {
 		super();
 		this.idDetalleFactura = id;
 		this.cantidad = cantidad;
@@ -48,11 +48,13 @@ public class DetalleFactura {
 		this.idDetalleFactura = idDetalleFactura;
 	}
 
-	public double getCantidad() {
+
+
+	public int getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(double cantidad) {
+	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
 

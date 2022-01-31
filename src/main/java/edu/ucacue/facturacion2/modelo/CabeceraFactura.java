@@ -34,6 +34,10 @@ public class CabeceraFactura {
 	@JoinColumn(name = "empresa_fk")
 	private Empresa empresa;
 	
+	private double subTotal;
+	private double iva;
+	private double total;
+	
 	
 	private Date fechaCompra;
 	
@@ -43,7 +47,7 @@ public class CabeceraFactura {
 	
 	public CabeceraFactura()
 	{
-		
+		this.detallesFacturas = new ArrayList<>();
 	}
 	
 	public CabeceraFactura(int id, int numeroFactura, Cliente cliente, Empresa empresa, Date fechaCompra, List<DetalleFactura> detallesFacturas) {
@@ -91,6 +95,43 @@ public class CabeceraFactura {
 	}
 	public void setDetallesFacturas(List<DetalleFactura> detallesFacturas) {
 		this.detallesFacturas = detallesFacturas;
+	}
+
+	public double getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(double subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public double getIva() {
+		return iva;
+	}
+
+	public void setIva(double iva) {
+		this.iva = iva;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+	
+	
+	public void calcularTotal()
+	{
+		double subTot=0;
+		for(DetalleFactura detalles: this.detallesFacturas)
+		{
+			subTot = subTot + detalles.getTotal();
+		}
+		this.subTotal=subTot;
+		this.iva=subTot*0.12;
+		this.total= subTot+iva;
 	}
 	
 

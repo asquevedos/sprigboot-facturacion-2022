@@ -5,6 +5,8 @@ import java.awt.Font;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +23,11 @@ import edu.ucacue.facturacion2.modelo.Producto;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionEvent;
@@ -31,12 +36,16 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import java.awt.Color;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
 @Controller
 public class VentanaFactura extends JInternalFrame {
 	JTextArea txtAreaNombre;
@@ -50,6 +59,14 @@ public class VentanaFactura extends JInternalFrame {
 	JTextArea txtAreaRUCEmp;
 	JTextArea txtAreaRazonSocialEmp;
 	JTextArea txtAreaTelefonoEmp;
+	JPopupMenu popupMenu;
+	JMenuItem deleteItem; 
+	JButton btnEliminar;
+	JLabel lblSubTotal;
+	JLabel lblIva; 
+	JLabel lblTotal; 
+	private JLabel lblTotal1;
+	JLabel lblIVA ;
 	
 	DetalleFacturaItemModel detalleFacturaModelo;
 	private JTable tableDetalleFactura;
@@ -59,25 +76,28 @@ public class VentanaFactura extends JInternalFrame {
 	DialogBuscarCliente buscarCliente;
 	@Autowired
 	DialogBuscarEmpresa buscarEmpresa;
-	
+
 	@Autowired
 	ProductoRepository productoRepositorio;
 
 	Cliente clienteSeleccionada;
 	Empresa empresaSeleccionada;
-	CabeceraFactura cabeceraFactura;
+	public CabeceraFactura cabeceraFactura;
 	private JTextField txtIdProducto;
 
 	public VentanaFactura() {
+
 		setTitle("Facturación");
 		setBackground(Color.LIGHT_GRAY);
 		
+		
+
 		detallesFactura = new ArrayList<>();
 
 		setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
 		cabeceraFactura = new CabeceraFactura();
-		setBounds(90, 10, 815,520);
+		setBounds(90, 10, 815, 520);
 		getContentPane().setLayout(null);
 
 		this.setResizable(true);
@@ -271,92 +291,112 @@ public class VentanaFactura extends JInternalFrame {
 		txtAreaTelefono.setEditable(false);
 		txtAreaTelefono.setBounds(487, 252, 196, 22);
 		getContentPane().add(txtAreaTelefono);
-		
+
 		JLabel lblNewLabel_10 = new JLabel("FACTURA ELECTRÓNICA");
 		lblNewLabel_10.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_10.setFont(new Font("Courier New", Font.PLAIN, 15));
 		lblNewLabel_10.setBounds(529, 54, 190, 13);
 		getContentPane().add(lblNewLabel_10);
-		
+
 		JLabel lblNewLabel_11 = new JLabel("Nº folio no asignado");
 		lblNewLabel_11.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_11.setFont(new Font("Courier New", Font.PLAIN, 15));
 		lblNewLabel_11.setBounds(509, 77, 223, 13);
 		getContentPane().add(lblNewLabel_11);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(204, 51, 51), 2));
 		panel.setBounds(509, 13, 223, 86);
 		getContentPane().add(panel);
-		
+
 		JLabel lblNewLabel_9 = new JLabel("Rut 44300251-0\r\n\r\n");
 		panel.add(lblNewLabel_9);
 		lblNewLabel_9.setForeground(new Color(204, 51, 51));
 		lblNewLabel_9.setFont(new Font("Courier New", Font.BOLD, 15));
 		lblNewLabel_9.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_9.setToolTipText("");
-		
+
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setBounds(10, 281, 783, 3);
 		getContentPane().add(separator_2);
-		
+
 		txtIdProducto = new JTextField();
 		txtIdProducto.setBounds(164, 285, 40, 20);
 		getContentPane().add(txtIdProducto);
 		txtIdProducto.setColumns(10);
-		
+
 		JButton btnNewButton = new JButton("Aceptar");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DetalleFactura detalleFactura = new DetalleFactura();
-				int idProducto= Integer.parseInt(txtIdProducto.getText());
-				Producto producto=productoRepositorio.findById(idProducto).get();
+				int idProducto = Integer.parseInt(txtIdProducto.getText());
+				Producto producto = productoRepositorio.findById(idProducto).get();
 				detalleFactura.setProducto(producto);
 				detalleFactura.setCantidad(1);
+				detalleFactura.setCabeceraFactura(cabeceraFactura);
+				detalleFactura.calcularTotal();
 				detallesFactura.add(detalleFactura);
+				cabeceraFactura.setDetallesFacturas(detallesFactura);
+				cabeceraFactura.calcularTotal();
 				llenarDatosDetallFactura();
+				
 			}
 		});
 		btnNewButton.setBounds(210, 285, 81, 23);
 		getContentPane().add(btnNewButton);
-		
+
 		JButton btnNewButton_1 = new JButton("Buscar");
 		btnNewButton_1.setBounds(291, 285, 81, 23);
 		getContentPane().add(btnNewButton_1);
-		
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(20, 317, 699, 111);
 		getContentPane().add(scrollPane);
 
 		tableDetalleFactura = new JTable();
-		
 		scrollPane.setViewportView(tableDetalleFactura);
-		
+		tableDetalleFactura.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+	        public void valueChanged(ListSelectionEvent event) {
+	        	btnEliminar.setEnabled(true);
+	        }
+	    });
+
 		JLabel lblNewLabel_12 = new JLabel("I.V.A:");
 		lblNewLabel_12.setBounds(564, 451, 62, 14);
 		getContentPane().add(lblNewLabel_12);
-		
+
 		JLabel lblNewLabel_12_1 = new JLabel("Sub Total:");
 		lblNewLabel_12_1.setBounds(564, 439, 62, 14);
 		getContentPane().add(lblNewLabel_12_1);
-		
-		JLabel lblNewLabel_12_2 = new JLabel("Total:");
-		lblNewLabel_12_2.setBounds(564, 464, 62, 14);
-		getContentPane().add(lblNewLabel_12_2);
-		
-		JLabel lblSubTotal = new JLabel("a");
+
+		lblTotal1 = new JLabel("Total:");
+		lblTotal1.setBounds(564, 464, 62, 14);
+		getContentPane().add(lblTotal1);
+
+		lblSubTotal = new JLabel("");
 		lblSubTotal.setBounds(641, 439, 76, 14);
 		getContentPane().add(lblSubTotal);
-		
-		JLabel lblIVA = new JLabel("a");
-		lblIVA.setBounds(641, 451, 76, 14);
-		getContentPane().add(lblIVA);
-		
-		JLabel lblTotal = new JLabel("a");
+
+		lblTotal = new JLabel("");
 		lblTotal.setBounds(641, 464, 73, 14);
 		getContentPane().add(lblTotal);
+		
+		btnEliminar = new JButton("X");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			 detalleFacturaModelo.removeRow(tableDetalleFactura.getSelectedRow());
+			 llenarDatosDetallFactura();
+			 
+			}
+		});
+		btnEliminar.setEnabled(false);
+		btnEliminar.setBounds(30, 435, 49, 23);
+		getContentPane().add(btnEliminar);
+		
+		lblIVA = new JLabel("");
+		lblIVA.setBounds(643, 451, 76, 14);
+		getContentPane().add(lblIVA);
 
 	}
 
@@ -377,11 +417,16 @@ public class VentanaFactura extends JInternalFrame {
 		txtAreaRazonSocialEmp.setText(empresaSeleccionada.getRazonSocial());
 		txtAreaTelefonoEmp.setText(empresaSeleccionada.getTelefono());
 	}
-	
-	public void llenarDatosDetallFactura()
-	{
+
+	public void llenarDatosDetallFactura() {
 		detalleFacturaModelo = new DetalleFacturaItemModel(detallesFactura);
 		tableDetalleFactura.setModel(detalleFacturaModelo);
 		
+		lblSubTotal.setText("$ "+ cabeceraFactura.getSubTotal()+"");
+		lblIVA.setText("$ "+ cabeceraFactura.getIva()+"");
+		lblTotal.setText("$ "+ cabeceraFactura.getTotal()+"");
+
 	}
+	
+	
 }
