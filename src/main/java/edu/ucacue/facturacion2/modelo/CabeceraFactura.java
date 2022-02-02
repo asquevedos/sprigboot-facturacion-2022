@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,10 +45,14 @@ public class CabeceraFactura {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "idDetalleFactura")
 	private List<DetalleFactura> detallesFacturas;
 	
+	@Column(columnDefinition = "boolean default true")
+	private boolean estado;
+	private Date fechaCancelacion;
 	
 	public CabeceraFactura()
 	{
 		this.detallesFacturas = new ArrayList<>();
+		this.estado = true;
 	}
 	
 	public CabeceraFactura(int id, int numeroFactura, Cliente cliente, Empresa empresa, Date fechaCompra, List<DetalleFactura> detallesFacturas) {
@@ -122,6 +127,32 @@ public class CabeceraFactura {
 	}
 	
 	
+	
+	
+	public boolean isEstado() {
+		return estado;
+	}
+
+	
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+		if(this.estado ==false)
+		{
+			setFechaCancelacion(new Date());
+		}
+		else {
+			setFechaCancelacion(null);
+		}
+	}
+
+	public Date getFechaCancelacion() {
+		return fechaCancelacion;
+	}
+
+	public void setFechaCancelacion(Date fechaCancelacion) {
+		this.fechaCancelacion = fechaCancelacion;
+	}
+
 	public void calcularTotal()
 	{
 		double subTot=0;

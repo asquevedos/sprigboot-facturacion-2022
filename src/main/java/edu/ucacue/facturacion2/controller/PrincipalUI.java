@@ -89,8 +89,11 @@ public class PrincipalUI extends JFrame {
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Nueva Factura ");
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				ventanaFactura.setVisible(true);
+				ventanaFactura.limpiarVentana();
 				desktopPane.add(ventanaFactura);
+				
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_2);

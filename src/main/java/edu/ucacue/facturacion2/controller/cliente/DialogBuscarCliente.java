@@ -25,6 +25,8 @@ import javax.annotation.PostConstruct;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @Controller
 public class DialogBuscarCliente extends JDialog {
@@ -44,6 +46,7 @@ public class DialogBuscarCliente extends JDialog {
 	ClienteRepositorio personaRepositorio;
 
 	public DialogBuscarCliente() {
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 563, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -77,6 +80,10 @@ public class DialogBuscarCliente extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
 			okButton = new JButton("OK");
+			okButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				}
+			});
 			okButton.setActionCommand("OK");
 			buttonPane.add(okButton);
 			getRootPane().setDefaultButton(okButton);

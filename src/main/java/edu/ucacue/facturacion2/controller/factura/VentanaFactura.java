@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import edu.ucacue.facturacion2.controller.cliente.ClienteItemModel;
 import edu.ucacue.facturacion2.controller.cliente.DialogBuscarCliente;
 import edu.ucacue.facturacion2.controller.empresa.DialogBuscarEmpresa;
+import edu.ucacue.facturacion2.infraestructura.repositorio.CabeceraFacturaRepository;
 import edu.ucacue.facturacion2.infraestructura.repositorio.ProductoRepository;
 import edu.ucacue.facturacion2.modelo.CabeceraFactura;
 import edu.ucacue.facturacion2.modelo.Cliente;
@@ -21,6 +22,7 @@ import edu.ucacue.facturacion2.modelo.DetalleFactura;
 import edu.ucacue.facturacion2.modelo.Empresa;
 import edu.ucacue.facturacion2.modelo.Producto;
 
+import javax.annotation.PostConstruct;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -28,7 +30,9 @@ import javax.swing.JFrame;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
@@ -38,13 +42,18 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import java.awt.Color;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 @Controller
 public class VentanaFactura extends JInternalFrame {
@@ -60,14 +69,14 @@ public class VentanaFactura extends JInternalFrame {
 	JTextArea txtAreaRazonSocialEmp;
 	JTextArea txtAreaTelefonoEmp;
 	JPopupMenu popupMenu;
-	JMenuItem deleteItem; 
+	JMenuItem deleteItem;
 	JButton btnEliminar;
 	JLabel lblSubTotal;
-	JLabel lblIva; 
-	JLabel lblTotal; 
+	JLabel lblIva;
+	JLabel lblTotal;
 	private JLabel lblTotal1;
-	JLabel lblIVA ;
-	
+	JLabel lblIVA;
+
 	DetalleFacturaItemModel detalleFacturaModelo;
 	private JTable tableDetalleFactura;
 	List<DetalleFactura> detallesFactura;
@@ -79,6 +88,9 @@ public class VentanaFactura extends JInternalFrame {
 
 	@Autowired
 	ProductoRepository productoRepositorio;
+	
+	@Autowired
+	CabeceraFacturaRepository cFRepository;
 
 	Cliente clienteSeleccionada;
 	Empresa empresaSeleccionada;
@@ -89,12 +101,8 @@ public class VentanaFactura extends JInternalFrame {
 
 		setTitle("Facturación");
 		setBackground(Color.LIGHT_GRAY);
-		
-		
 
 		detallesFactura = new ArrayList<>();
-
-		setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
 		cabeceraFactura = new CabeceraFactura();
 		setBounds(90, 10, 815, 520);
@@ -125,6 +133,7 @@ public class VentanaFactura extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				buscarCliente.setVisible(true);
+				
 				buscarCliente.generarTabla();
 
 				buscarCliente.okButton.addActionListener(new ActionListener() {
@@ -133,9 +142,10 @@ public class VentanaFactura extends JInternalFrame {
 					public void actionPerformed(ActionEvent e) {
 
 						clienteSeleccionada = buscarCliente.personaSeleccionada();
-						cabeceraFactura.setCliente(null);
+						cabeceraFactura.setCliente(clienteSeleccionada);
 						llenarDatosCliente();
-						buscarCliente.setVisible(false);
+						//buscarCliente.setVisible(false);
+						buscarCliente.dispatchEvent(new WindowEvent(buscarCliente, WindowEvent.WINDOW_CLOSING));
 					}
 				});
 
@@ -191,9 +201,9 @@ public class VentanaFactura extends JInternalFrame {
 					public void actionPerformed(ActionEvent e) {
 
 						empresaSeleccionada = buscarEmpresa.empresaSeleccionada();
-						cabeceraFactura.setEmpresa(null);
+						cabeceraFactura.setEmpresa(empresaSeleccionada);
 						llenarDatosEmpresa();
-						buscarEmpresa.setVisible(false);
+						buscarEmpresa.dispatchEvent(new WindowEvent(buscarEmpresa, WindowEvent.WINDOW_CLOSING));
 					}
 				});
 
@@ -204,7 +214,7 @@ public class VentanaFactura extends JInternalFrame {
 		getContentPane().add(btnBuscarEmpresa);
 
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 0, 783, 174);
+		separator_1.setBounds(10, 0, 783, 14);
 		getContentPane().add(separator_1);
 
 		JLabel lblNewLabel_8 = new JLabel("Nombre");
@@ -339,7 +349,7 @@ public class VentanaFactura extends JInternalFrame {
 				cabeceraFactura.setDetallesFacturas(detallesFactura);
 				cabeceraFactura.calcularTotal();
 				llenarDatosDetallFactura();
-				
+
 			}
 		});
 		btnNewButton.setBounds(210, 285, 81, 23);
@@ -353,17 +363,39 @@ public class VentanaFactura extends JInternalFrame {
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(20, 317, 699, 111);
 		getContentPane().add(scrollPane);
+		
+
 
 		tableDetalleFactura = new JTable();
+		tableDetalleFactura.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				cabeceraFactura.calcularTotal();
+				llenarDatosDetallFactura();
+			}
+		});
+
 		scrollPane.setViewportView(tableDetalleFactura);
-		tableDetalleFactura.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-	        public void valueChanged(ListSelectionEvent event) {
-	        	btnEliminar.setEnabled(true);
-	        }
-	    });
+		tableDetalleFactura.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				btnEliminar.setEnabled(true);
+			}
+			
+		});
+		
+		detalleFacturaModelo = new DetalleFacturaItemModel(detallesFactura);
+		
+
+		tableDetalleFactura.setModel(detalleFacturaModelo);
+
+		
+
+		
+
 
 		JLabel lblNewLabel_12 = new JLabel("I.V.A:");
 		lblNewLabel_12.setBounds(564, 451, 62, 14);
+
 		getContentPane().add(lblNewLabel_12);
 
 		JLabel lblNewLabel_12_1 = new JLabel("Sub Total:");
@@ -381,22 +413,37 @@ public class VentanaFactura extends JInternalFrame {
 		lblTotal = new JLabel("");
 		lblTotal.setBounds(641, 464, 73, 14);
 		getContentPane().add(lblTotal);
-		
+
 		btnEliminar = new JButton("X");
 		btnEliminar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			 detalleFacturaModelo.removeRow(tableDetalleFactura.getSelectedRow());
-			 llenarDatosDetallFactura();
-			 
+				detalleFacturaModelo.removeRow(tableDetalleFactura.getSelectedRow());
+				cabeceraFactura.calcularTotal();
+				llenarDatosDetallFactura();
+
 			}
 		});
 		btnEliminar.setEnabled(false);
 		btnEliminar.setBounds(30, 435, 49, 23);
 		getContentPane().add(btnEliminar);
-		
+
 		lblIVA = new JLabel("");
 		lblIVA.setBounds(643, 451, 76, 14);
 		getContentPane().add(lblIVA);
+		
+		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cabeceraFactura.setFechaCompra(new Date());
+				cabeceraFactura.calcularTotal();
+				cFRepository.save(cabeceraFactura);
+				limpiarVentana();
+			}
+		});
+		btnGuardar.setBounds(283, 439, 89, 23);
+		getContentPane().add(btnGuardar);
+		
+
 
 	}
 
@@ -421,12 +468,33 @@ public class VentanaFactura extends JInternalFrame {
 	public void llenarDatosDetallFactura() {
 		detalleFacturaModelo = new DetalleFacturaItemModel(detallesFactura);
 		tableDetalleFactura.setModel(detalleFacturaModelo);
-		
-		lblSubTotal.setText("$ "+ cabeceraFactura.getSubTotal()+"");
-		lblIVA.setText("$ "+ cabeceraFactura.getIva()+"");
-		lblTotal.setText("$ "+ cabeceraFactura.getTotal()+"");
+
+		lblSubTotal.setText("$ " +  cabeceraFactura.getSubTotal() + "");
+		lblIVA.setText("$ " + cabeceraFactura.getIva() + "");
+		lblTotal.setText("$ " + cabeceraFactura.getTotal() + "");
 
 	}
 	
-	
+	public void limpiarVentana() {
+		// datos clientes
+		txtAreaNombre.setText("");
+		txtAreaApellido.setText("");
+		txtAreaCedula.setText("");
+		txtAreaDireccion.setText("");
+		txtAreaNombre.setText("");
+		txtAreaTelefono.setText("");
+		
+		// datos Empresa
+		txtAreaTelefonoEmp.setText("");
+		txtAreaRazonSocialEmp.setText("");
+		txtAreaNombreEmp.setText("");
+		txtAreaRUCEmp.setText("");
+		txtAreaDireccionEmp.setText("");
+		txtAreaDireccionEmp.setText("");
+		
+		//Tabla
+		
+		detallesFactura = new ArrayList<>();
+		llenarDatosDetallFactura();
+	}
 }
