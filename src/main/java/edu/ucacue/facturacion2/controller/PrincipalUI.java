@@ -12,12 +12,14 @@ import org.springframework.stereotype.Controller;
 import edu.ucacue.facturacion2.controller.cliente.VentanaCliente;
 import edu.ucacue.facturacion2.controller.factura.VentanaFactura;
 import edu.ucacue.facturacion2.controller.producto.VentanaProducto;
+import edu.ucacue.facturacion2.infraestructura.servicios.ClienteReporteService;
+import net.sf.jasperreports.engine.JRException;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
-
+import java.io.FileNotFoundException;
 import java.awt.event.ActionEvent;
 
 @Controller
@@ -37,6 +39,9 @@ public class PrincipalUI extends JFrame {
 	
 	@Autowired
 	VentanaProducto ventanaProducto;
+	
+	@Autowired
+	ClienteReporteService clienteReporteService;
 
 	/**
 	 * Create the frame.
@@ -66,6 +71,29 @@ public class PrincipalUI extends JFrame {
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Reporte");
+		mntmNewMenuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+				clienteReporteService.generarReporte("html");
+				clienteReporteService.generarReporte("pdf");
+				}catch (JRException jre) {
+					// TODO: handle exception
+				}
+				catch (FileNotFoundException fnfe) {
+					// TODO: handle exception
+				}
+				
+			}
+		});
+		
+		JMenu mnNewMenu_4 = new JMenu("Reporte");
+		mnNewMenu.add(mnNewMenu_4);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("pdf");
+		mnNewMenu_4.add(mntmNewMenuItem_4);
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("html");
+		mnNewMenu_4.add(mntmNewMenuItem_5);
 		mnNewMenu.add(mntmNewMenuItem_1);
 		
 		JMenu mnNewMenu_3 = new JMenu("Producto");
@@ -105,6 +133,4 @@ public class PrincipalUI extends JFrame {
 		desktopPane= new JDesktopPane();
 		getContentPane().add(desktopPane);
 	}
-	
-	
 }

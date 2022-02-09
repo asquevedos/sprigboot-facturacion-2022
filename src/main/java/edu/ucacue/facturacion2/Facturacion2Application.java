@@ -9,12 +9,12 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import edu.ucacue.facturacion2.controller.PrincipalUI;
-import edu.ucacue.facturacion2.controller.cliente.VentanaCliente;
+import net.sf.jasperreports.engine.JRException;
 
 @SpringBootApplication
 public class Facturacion2Application {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException, JRException {
 		// SpringApplication.run(Facturacion2Application.class, args);
 
 		ConfigurableApplicationContext contexto = new SpringApplicationBuilder(Facturacion2Application.class)
