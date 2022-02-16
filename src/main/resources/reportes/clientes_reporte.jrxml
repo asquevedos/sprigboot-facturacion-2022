@@ -5,7 +5,6 @@
 	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
 	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
 	<style name="Detail" fontName="Arial" fontSize="12"/>
-
 	<field name="nombre" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
 		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
@@ -124,7 +123,6 @@
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
 			</textField>
-
 		</band>
 	</detail>
 	<columnFooter>
@@ -166,4 +164,3 @@
 		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>
-

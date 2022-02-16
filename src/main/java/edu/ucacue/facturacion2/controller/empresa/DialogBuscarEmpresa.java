@@ -1,7 +1,5 @@
 package edu.ucacue.facturacion2.controller.empresa;
 
-
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 

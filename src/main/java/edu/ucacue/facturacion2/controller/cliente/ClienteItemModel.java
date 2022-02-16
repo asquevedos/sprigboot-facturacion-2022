@@ -7,14 +7,13 @@ import javax.swing.table.AbstractTableModel;
 import edu.ucacue.facturacion2.modelo.Cliente;
 
 public class ClienteItemModel extends AbstractTableModel {
-	
-	
+
 	/**
 	* 
 	*/
 	private static final long serialVersionUID = 1L;
 	private List<Cliente> personas;
-	private static final String[] COLUMN_NAMES = {"Nombre", "Apellido", "Cédula", "Dirección"};
+	private static final String[] COLUMN_NAMES = { "Nombre", "Apellido", "Cédula", "Dirección" };
 
 	public ClienteItemModel(List<Cliente> personas) {
 
@@ -57,15 +56,15 @@ public class ClienteItemModel extends AbstractTableModel {
 	}
 
 	@Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return Cliente.class;
-    }
-	
-    //the column header
-    @Override
-    public String getColumnName(int column) {
-        return COLUMN_NAMES[column];
-    }
+	public Class<?> getColumnClass(int columnIndex) {
+		return Cliente.class;
+	}
+
+	// the column header
+	@Override
+	public String getColumnName(int column) {
+		return COLUMN_NAMES[column];
+	}
 
 	/*
 	 * Override this if you want the values to be editable...
@@ -80,10 +79,9 @@ public class ClienteItemModel extends AbstractTableModel {
 	 * @param row
 	 * @return
 	 */
-    
+
 	public Cliente getPersonaAt(int row) {
 		return personas.get(row);
 	}
-
 
 }

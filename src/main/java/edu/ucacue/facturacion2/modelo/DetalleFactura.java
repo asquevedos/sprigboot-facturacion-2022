@@ -48,8 +48,6 @@ public class DetalleFactura {
 		this.idDetalleFactura = idDetalleFactura;
 	}
 
-
-
 	public int getCantidad() {
 		return cantidad;
 	}

@@ -2,7 +2,6 @@ package edu.ucacue.facturacion2;
 
 import java.io.FileNotFoundException;
 
-
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

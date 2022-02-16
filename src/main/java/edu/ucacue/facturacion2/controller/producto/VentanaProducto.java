@@ -133,7 +133,6 @@ public class VentanaProducto extends JInternalFrame {
 					producto.setPrecioUnitario(Double.parseDouble(txtPrecioUnitario.getText()));
 					producto.setCantidad(Integer.parseInt(txtCantidad.getText()));
 
-
 					productoRepositorio.save(producto);
 				} else {
 					producto = new Producto();
@@ -141,7 +140,7 @@ public class VentanaProducto extends JInternalFrame {
 					producto.setNombre(txtNombre.getText());
 					producto.setPrecioUnitario(Double.parseDouble(txtPrecioUnitario.getText()));
 					producto.setCantidad(Integer.parseInt(txtCantidad.getText()));
-				
+
 					productoRepositorio.save(producto);
 					bandera = true;
 					txtCantidad.setEnabled(true);
@@ -192,8 +191,8 @@ public class VentanaProducto extends JInternalFrame {
 			public void actionPerformed(ActionEvent e) {
 				productoSeleccionada = productoModelo.getPersonaAt(tableProducto.getSelectedRow());
 				txtNombre.setText(productoSeleccionada.getNombre());
-				txtPrecioUnitario.setText(productoSeleccionada.getPrecioUnitario()+"");
-				txtCantidad.setText(productoSeleccionada.getCantidad()+"");
+				txtPrecioUnitario.setText(productoSeleccionada.getPrecioUnitario() + "");
+				txtCantidad.setText(productoSeleccionada.getCantidad() + "");
 
 				txtCantidad.setEnabled(false);
 				bandera = false;
@@ -206,32 +205,32 @@ public class VentanaProducto extends JInternalFrame {
 		btnActualizar.setEnabled(false);
 		btnActualizar.setBounds(215, 181, 89, 40);
 		contentPane.add(btnActualizar);
-		
+
 		cBOpcion = new JComboBox();
-		cBOpcion.setModel(new DefaultComboBoxModel(new String[] {"", "Nombre"}));
+		cBOpcion.setModel(new DefaultComboBoxModel(new String[] { "", "Nombre" }));
 		cBOpcion.setBounds(315, 55, 77, 22);
 		contentPane.add(cBOpcion);
-		
+
 		txtCriterio = new JTextField();
 		txtCriterio.setFont(new Font("Tahoma", Font.BOLD, 18));
 		txtCriterio.setBounds(402, 37, 275, 39);
 		contentPane.add(txtCriterio);
 		txtCriterio.setColumns(10);
-		
+
 		lblNewLabel_2 = new JLabel("Buscar por:");
 		lblNewLabel_2.setBounds(315, 37, 77, 14);
 		contentPane.add(lblNewLabel_2);
-		
+
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String opcion= cBOpcion.getSelectedItem().toString();
+				String opcion = cBOpcion.getSelectedItem().toString();
 				String criterio = txtCriterio.getText();
 				List<Producto> resultadoBusqueda = new ArrayList<>();
-				if(opcion.equals("Nombre"))
-				{
-					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de busqueda
-					resultadoBusqueda = productoRepositorio.buscarPorNombre("%"+criterio+"%");
+				if (opcion.equals("Nombre")) {
+					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de
+					/// busqueda
+					resultadoBusqueda = productoRepositorio.buscarPorNombre("%" + criterio + "%");
 					generarTablaBusqueda(resultadoBusqueda);
 				}
 			}
@@ -259,9 +258,8 @@ public class VentanaProducto extends JInternalFrame {
 		tableProducto.setModel(productoModelo);
 
 	}
-	
-	public void generarTablaBusqueda(List<Producto> productos)
-	{
+
+	public void generarTablaBusqueda(List<Producto> productos) {
 		productoModelo = new ProductoItemModel(productos);
 		tableProducto.setModel(productoModelo);
 	}

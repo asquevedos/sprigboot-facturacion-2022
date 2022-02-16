@@ -1,14 +1,12 @@
 package edu.ucacue.facturacion2.controller.empresa;
 
-
-
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
 import edu.ucacue.facturacion2.modelo.Empresa;
 
-public class EmpresaItemModel extends AbstractTableModel{
+public class EmpresaItemModel extends AbstractTableModel {
 
 	/**
 	* 
@@ -16,7 +14,7 @@ public class EmpresaItemModel extends AbstractTableModel{
 	private static final long serialVersionUID = 1L;
 	private List<Empresa> empresas;
 
-	private static final String[] COLUMN_NAMES = {"Razon Social", "Ruc", "Telefono","Dirección"};
+	private static final String[] COLUMN_NAMES = { "Razon Social", "Ruc", "Telefono", "Dirección" };
 
 	public EmpresaItemModel(List<Empresa> empresas) {
 
@@ -53,22 +51,22 @@ public class EmpresaItemModel extends AbstractTableModel{
 			value = empresa.getDireccion();
 			break;
 		}
-		//int id, String nombre, String ruc, String direccion
+		// int id, String nombre, String ruc, String direccion
 
 		return value;
 
 	}
 
 	@Override
-    public Class<?> getColumnClass(int columnIndex) {
-        return Empresa.class;
-    }
-	
-    //the column header
-    @Override
-    public String getColumnName(int column) {
-        return COLUMN_NAMES[column];
-    }
+	public Class<?> getColumnClass(int columnIndex) {
+		return Empresa.class;
+	}
+
+	// the column header
+	@Override
+	public String getColumnName(int column) {
+		return COLUMN_NAMES[column];
+	}
 
 	/*
 	 * Override this if you want the values to be editable...
@@ -83,7 +81,7 @@ public class EmpresaItemModel extends AbstractTableModel{
 	 * @param row
 	 * @return
 	 */
-    
+
 	public Empresa getEmpresaAt(int row) {
 		return empresas.get(row);
 	}

@@ -219,54 +219,52 @@ public class VentanaCliente extends JInternalFrame {
 		btnActualizar.setEnabled(false);
 		btnActualizar.setBounds(216, 212, 89, 40);
 		contentPane.add(btnActualizar);
-		
+
 		cBOpcion = new JComboBox();
-		cBOpcion.setModel(new DefaultComboBoxModel(new String[] {"", "Nombre", "Apellido", "Cédula"}));
+		cBOpcion.setModel(new DefaultComboBoxModel(new String[] { "", "Nombre", "Apellido", "Cédula" }));
 		cBOpcion.setBounds(315, 55, 77, 22);
 		contentPane.add(cBOpcion);
-		
+
 		txtCriterio = new JTextField();
 		txtCriterio.setFont(new Font("Tahoma", Font.BOLD, 18));
 		txtCriterio.setBounds(402, 37, 275, 39);
 		contentPane.add(txtCriterio);
 		txtCriterio.setColumns(10);
-		
+
 		lblNewLabel_2 = new JLabel("Buscar por:");
 		lblNewLabel_2.setBounds(315, 37, 77, 14);
 		contentPane.add(lblNewLabel_2);
-		
+
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String opcion= cBOpcion.getSelectedItem().toString();
+				String opcion = cBOpcion.getSelectedItem().toString();
 				String criterio = txtCriterio.getText();
 				List<Cliente> resultadoBusqueda = new ArrayList<>();
-				if(opcion.equals("Nombre"))
-				{
-					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de busqueda
-					resultadoBusqueda = clienteRepositorio.buscarPorNombre("%"+criterio+"%");
+				if (opcion.equals("Nombre")) {
+					/// Tengo que tomar todas las personas que tengan el nombre por el criterio de
+					/// busqueda
+					resultadoBusqueda = clienteRepositorio.buscarPorNombre("%" + criterio + "%");
 					generarTablaBusqueda(resultadoBusqueda);
 				}
-				if(opcion.equals("Apellido"))
-				{
-					resultadoBusqueda = clienteRepositorio.findByApellidoLike("%"+criterio+"%");
+				if (opcion.equals("Apellido")) {
+					resultadoBusqueda = clienteRepositorio.findByApellidoLike("%" + criterio + "%");
 					generarTablaBusqueda(resultadoBusqueda);
-					
+
 				}
-				if(opcion.equals("Cédula"))
-				{
-					resultadoBusqueda = clienteRepositorio.findByCedulaLike("%"+criterio+"%");
+				if (opcion.equals("Cédula")) {
+					resultadoBusqueda = clienteRepositorio.findByCedulaLike("%" + criterio + "%");
 					generarTablaBusqueda(resultadoBusqueda);
 				}
 			}
 		});
 		btnBuscar.setBounds(687, 37, 79, 34);
 		contentPane.add(btnBuscar);
-		
+
 		JLabel lblNewLabel_1_3_1 = new JLabel("Teléfono:");
 		lblNewLabel_1_3_1.setBounds(46, 181, 60, 21);
 		contentPane.add(lblNewLabel_1_3_1);
-		
+
 		txtTelefono = new JTextField();
 		txtTelefono.setColumns(10);
 		txtTelefono.setBounds(131, 181, 154, 20);
@@ -295,9 +293,8 @@ public class VentanaCliente extends JInternalFrame {
 		tableCliente.setModel(clienteModelo);
 
 	}
-	
-	public void generarTablaBusqueda(List<Cliente> personas)
-	{
+
+	public void generarTablaBusqueda(List<Cliente> personas) {
 		clienteModelo = new ClienteItemModel(personas);
 		tableCliente.setModel(clienteModelo);
 	}

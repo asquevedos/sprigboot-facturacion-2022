@@ -5,10 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
 @Entity
-@Table(name="empresas")
+@Table(name = "empresas")
 public class Empresa {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -17,9 +18,10 @@ public class Empresa {
 	private String direccion;
 	private String telefono;
 	private String ruc;
-	
-	public Empresa() {}
-	
+
+	public Empresa() {
+	}
+
 	public Empresa(int id, String razonSocial, String direccion, String telefono, String ruc) {
 		super();
 		this.id = id;
@@ -76,10 +78,5 @@ public class Empresa {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
-	
-	
-	
-	
 
 }

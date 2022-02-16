@@ -106,7 +106,7 @@ public class DialogBuscarCliente extends JDialog {
 				// System.out.println(tablePersona.getSelectedRow());
 				// btnEliminar.setEnabled(true);
 				// btnActualizar.setEnabled(true);
-				//System.out.println(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
+				// System.out.println(personaModelo.getPersonaAt(tablePersona.getSelectedRow()));
 
 			}
 		});
